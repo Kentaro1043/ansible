@@ -1,0 +1,8 @@
+[gce_compute]
+gce-compute.kentaro1043.com ansible_user=kentaro
+
+[oci_compute_ubuntu]
+oci-compute.kentaro1043.com ansible_user=ubuntu
+
+[oci_compute_kentaro]
+oci-compute.kentaro1043.com ansible_user=kentaro
