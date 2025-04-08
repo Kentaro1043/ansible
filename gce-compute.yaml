@@ -1,0 +1,5 @@
+---
+- name: Gce-compute
+  hosts: gce_compute
+  roles:
+    - common-ubuntu
