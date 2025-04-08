@@ -1,0 +1,16 @@
+---
+- name: Add user kentaro
+  ansible.builtin.user:
+    name: kentaro
+    create_home: true
+    shell: /bin/bash
+    groups: sudo
+    append: true
+    state: present
+  become: true
+
+- name: Add public key to authorized_key
+  ansible.posix.authorized_key:
+    key: "{{ public_key }}"
+    user: kentaro
+    state: present

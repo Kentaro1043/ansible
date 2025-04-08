@@ -1,0 +1,8 @@
+---
+- name: Import apt-package.yaml
+  ansible.builtin.import_tasks: apt-package.yaml
+  become: true
+
+- name: Import user.yaml
+  ansible.builtin.import_tasks: user.yaml
+  become: true
