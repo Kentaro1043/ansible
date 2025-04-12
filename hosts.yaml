@@ -1,0 +1,15 @@
+---
+all:
+  children:
+    gce_compute:
+      hosts:
+        gce.kentaro1043.com:
+          ansible_user: kentaro
+    oci_compute_ubuntu:
+      hosts:
+        oci.kentaro1043.com:
+          ansible_user: ubuntu
+    oci_compute_kentaro:
+      hosts:
+        oci.kentaro1043.com:
+          ansible_user: kentaro
