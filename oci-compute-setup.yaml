@@ -1,5 +1,0 @@
----
-- name: Gce-compute
-  hosts: oci_compute_ubuntu
-  roles:
-    - common-ubuntu

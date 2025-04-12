@@ -1,6 +1,5 @@
 ---
 - name: Gce-compute
-  hosts: gce_compute
+  hosts: oci_compute
   roles:
     - add-kentaro
-    - common-ubuntu

@@ -10,6 +10,7 @@
   become: true
 
 - name: Add public key to authorized_key
+  become: true
   ansible.posix.authorized_key:
     key: "{{ public_key }}"
     user: kentaro
