@@ -1,6 +1,7 @@
 ---
-- name: Gce-compute
+- name: Oci-compute
   hosts: oci_compute
   roles:
     - add-kentaro
     - common-ubuntu
+    - oci-attach-vnic
