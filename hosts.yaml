@@ -5,11 +5,14 @@ all:
       hosts:
         gce.kentaro1043.com:
           ansible_user: kentaro
+          ansible_python_interpreter: /usr/bin/python3
     oci_compute_ubuntu:
       hosts:
         oci.kentaro1043.com:
           ansible_user: ubuntu
+          ansible_python_interpreter: /usr/bin/python3
     oci_compute_kentaro:
       hosts:
         oci.kentaro1043.com:
           ansible_user: kentaro
+          ansible_python_interpreter: /usr/bin/python3
