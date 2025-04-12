@@ -1,4 +1,4 @@
-hostname: "oci-compute.kentaro1043.com"
+hostname: "oci.kentaro1043.com"
 
 public_ip: "140.83.85.226"
 private_ip: "10.1.0.114"
