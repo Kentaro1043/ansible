@@ -3,3 +3,4 @@
   hosts: oci_compute
   roles:
     - add-kentaro
+    - common-ubuntu
