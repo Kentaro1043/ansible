@@ -1,0 +1,11 @@
+network:
+  version: 2
+  ethernets:
+    {{ nodesb_nic }}:
+      dhcp4: false
+      addresses: [ {{ nodesb_ip }} ]
+      nameservers:
+        addresses: [ 169.254.169.254 ]
+      match:
+        macaddress: {{ nodesb_mac }}
+      set-name: {{ nodesb_nic }}
