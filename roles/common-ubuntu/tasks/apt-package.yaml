@@ -4,4 +4,5 @@
     name:
       - git
       - vim
+    update_cache: true
     state: present
