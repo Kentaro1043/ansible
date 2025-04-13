@@ -12,6 +12,7 @@
     protocol: tcp
     destination_port: 2049
     jump: ACCEPT
+    action: insert
     state: present
 
 - name: Create export directory
