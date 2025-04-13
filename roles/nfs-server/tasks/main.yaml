@@ -5,6 +5,15 @@
     name: nfs-kernel-server
     state: present
 
+- name: Open NFS ports in the firewall
+  become: true
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: 2049
+    jump: ACCEPT
+    state: present
+
 - name: Create export directory
   become: true
   ansible.builtin.file:
@@ -14,6 +23,7 @@
 
 - name: Configure exports
   become: true
+  notify: Restart NFS service
   ansible.builtin.lineinfile:
     path: /etc/exports
     line: "/srv/nfs 10.0.10.0/24(rw,sync,no_subtree_check,no_root_squash)"
@@ -21,10 +31,3 @@
     owner: root
     group: root
     mode: '0644'
-
-- name: Ensure NFS service is enabled and running
-  become: true
-  ansible.builtin.service:
-    name: nfs-kernel-server
-    state: started
-    enabled: true
