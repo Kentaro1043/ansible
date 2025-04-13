@@ -1,0 +1,24 @@
+---
+- name: Open tcp port
+  become: true
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{ item }}"
+    jump: ACCEPT
+    action: insert
+    state: present
+  loop: "{{ public_tcp_ports }}"
+  when: public_tcp_ports is defined
+
+- name: Open udp port
+  become: true
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: udp
+    destination_port: "{{ item }}"
+    jump: ACCEPT
+    action: insert
+    state: present
+  loop: "{{ public_udp_ports }}"
+  when: public_udp_ports is defined

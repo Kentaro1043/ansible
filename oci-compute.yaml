@@ -4,7 +4,7 @@
   roles:
     - add-kentaro
     - common-ubuntu
-    - open-web-port
+    - open-port
     - oci-attach-vnic
     - nfs-server
     - docker
