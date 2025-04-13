@@ -1,5 +1,7 @@
 hostname: "oci.kentaro1043.com"
 
+architecture: "arm64"
+
 public_ip: "138.2.34.170"
 private_ip: "10.1.0.56"
 private_ip_for_node_sb: "10.0.10.155"

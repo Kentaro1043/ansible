@@ -1,0 +1,20 @@
+---
+- name: Make portainer directory
+  become: true
+  ansible.builtin.file:
+    path: /srv/portainer
+    state: directory
+    mode: '0755'
+
+- name: Copy portainer compose file
+  become: true
+  ansible.builtin.get_url:
+    url: "https://github.com/Kentaro1043/compose/raw/refs/heads/main/portainer/compose.yaml"
+    dest: /srv/portainer/compose.yaml
+    mode: '0644'
+
+- name: Start portainer
+  become: true
+  community.docker.docker_compose_v2:
+    project_src: /srv/portainer
+    state: present

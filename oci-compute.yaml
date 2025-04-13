@@ -6,3 +6,5 @@
     - common-ubuntu
     - oci-attach-vnic
     - nfs-server
+    - docker
+    - portainer
