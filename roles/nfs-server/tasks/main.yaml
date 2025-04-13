@@ -1,0 +1,30 @@
+---
+- name: Install NFS server packages
+  become: true
+  ansible.builtin.apt:
+    name: nfs-kernel-server
+    state: present
+
+- name: Create export directory
+  become: true
+  ansible.builtin.file:
+    path: /srv/nfs
+    state: directory
+    mode: '0755'
+
+- name: Configure exports
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/exports
+    line: "/srv/nfs 10.0.10.0/24(rw,sync,no_subtree_check,no_root_squash)"
+    create: true
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Ensure NFS service is enabled and running
+  become: true
+  ansible.builtin.service:
+    name: nfs-kernel-server
+    state: started
+    enabled: true
