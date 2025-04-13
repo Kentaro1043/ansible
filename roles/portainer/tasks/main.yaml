@@ -1,4 +1,10 @@
 ---
+- name: Make cf-tunnel network
+  become: true
+  community.docker.docker_network:
+    name: cf-tunnel
+    state: present
+
 - name: Make portainer directory
   become: true
   ansible.builtin.file:
@@ -12,6 +18,7 @@
     url: "https://github.com/Kentaro1043/compose/raw/refs/heads/main/portainer/compose.yaml"
     dest: /srv/portainer/compose.yaml
     mode: '0644'
+  notify: Restart portainer
 
 - name: Start portainer
   become: true
