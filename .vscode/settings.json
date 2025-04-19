@@ -2,5 +2,5 @@
     "files.associations": {
         "*.yaml": "ansible"
     },
-    "ansible.python.interpreterPath": "/bin/python3"
+    "ansible.python.interpreterPath": "/Users/yusei/.pyenv/versions/3.12.4/bin/python"
 }

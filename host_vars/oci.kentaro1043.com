@@ -14,3 +14,6 @@ public_tcp_ports:
   - 2049 # NFS
 
 public_udp_port: 
+
+alloy:
+  gcloud_rw_api_key: "{{ vault_oci_gcloud_rw_api_key }}"
