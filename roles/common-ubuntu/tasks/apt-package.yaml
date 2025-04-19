@@ -4,5 +4,7 @@
     name:
       - git
       - vim
+      - gpg
+      - iptables-persistent
     update_cache: true
     state: present
