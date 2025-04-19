@@ -14,7 +14,6 @@
 
 - name: Install alloy
   become: true
-  notify: Reload systemd
   ansible.builtin.apt:
     name: alloy
     state: present
@@ -26,6 +25,16 @@
     groups: docker
     append: true
 
+- name: Change user using alloy service
+  become: true
+  notify:
+    - Reload systemd
+    - Restart alloy
+  ansible.builtin.replace:
+    path: /etc/systemd/system/alloy.service
+    regexp: "^User=alloy$"
+    replace: "User=root"
+
 - name: Make alloy config directory
   become: true
   ansible.builtin.file:
@@ -35,11 +44,13 @@
 
 - name: Copy alloy config
   become: true
+  notify:
+    - Reload systemd
+    - Restart alloy
   ansible.builtin.template:
     src: config.alloy.j2
     dest: /etc/alloy/config.alloy
     mode: '0644'
-  notify: Reload alloy
 
 - name: Start alloy
   become: true
