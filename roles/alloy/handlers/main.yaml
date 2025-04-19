@@ -1,0 +1,17 @@
+---
+- name: Update apt cache
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Reload alloy
+  become: true
+  ansible.builtin.systemd:
+    name: alloy
+    state: reloaded
+    enabled: true
+
+- name: Reload systemd
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true

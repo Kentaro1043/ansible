@@ -1,0 +1,42 @@
+---
+- name: Import alloy GPG key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://apt.grafana.com/gpg.key
+    state: present
+
+- name: Add alloy repository
+  become: true
+  notify: Update apt cache
+  ansible.builtin.apt_repository:
+    repo: "deb https://apt.grafana.com stable main"
+    state: present
+
+- name: Install alloy
+  become: true
+  notify: Reload systemd
+  ansible.builtin.apt:
+    name: alloy
+    state: present
+
+- name: Make alloy config directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/alloy
+    state: directory
+    mode: '0755'
+
+- name: Copy alloy config
+  become: true
+  ansible.builtin.template:
+    src: config.alloy.j2
+    dest: /etc/alloy/config.alloy
+    mode: '0644'
+  notify: Reload alloy
+
+- name: Start alloy
+  become: true
+  ansible.builtin.systemd:
+    name: alloy
+    state: started
+    enabled: true
