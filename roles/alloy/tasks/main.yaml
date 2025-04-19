@@ -19,6 +19,13 @@
     name: alloy
     state: present
 
+- name: Add alloy user to docker group
+  become: true
+  ansible.builtin.user:
+    name: alloy
+    groups: docker
+    append: true
+
 - name: Make alloy config directory
   become: true
   ansible.builtin.file:
