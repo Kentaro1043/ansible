@@ -18,12 +18,37 @@
     name: alloy
     state: present
 
+- name: Check if docker group exists
+  become: true
+  ansible.builtin.getent:
+    database: group
+    key: docker
+  register: docker_group
+  ignore_errors: true
+
 - name: Add alloy user to docker group
   become: true
   ansible.builtin.user:
     name: alloy
     groups: docker
     append: true
+  when: not docker_group.failed
+
+- name: Check if systemd service file exists
+  become: true
+  ansible.builtin.stat:
+    path: /etc/systemd/system/alloy.service
+  register: systemd_service_file
+  ignore_errors: true
+
+- name: Copy systemd service file if it doesn't exist
+  become: true
+  ansible.builtin.copy:
+    src: /usr/lib/systemd/system/alloy.service
+    remote_src: true
+    dest: /etc/systemd/system/alloy.service
+    mode: '0644'
+  when: not systemd_service_file.stat.exists
 
 - name: Change user using alloy service
   become: true
@@ -48,7 +73,7 @@
     - Reload systemd
     - Restart alloy
   ansible.builtin.template:
-    src: config.alloy.j2
+    src: "{{ inventory_hostname }}.config.alloy.j2"
     dest: /etc/alloy/config.alloy
     mode: '0644'
 

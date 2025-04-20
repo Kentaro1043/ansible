@@ -1,0 +1,159 @@
+prometheus.remote_write "grafana_cloud_prometheus" {
+  endpoint {
+    url = "https://prometheus-prod-49-prod-ap-northeast-0.grafana.net/api/prom/push"
+
+    basic_auth {
+      username = "2389127"
+      password = {{ oci_alloy_api }}
+    }
+  }
+}
+
+loki.write "grafana_cloud_loki" {
+  endpoint {
+    url = "https://logs-prod-030.grafana.net/loki/api/v1/push"
+
+    basic_auth {
+      username = "1190241"
+      password = {{ oci_loki_api }}
+    }
+  }
+}
+
+discovery.relabel "integrations_node_exporter" {
+  targets = prometheus.exporter.unix.integrations_node_exporter.targets
+
+  rule {
+    target_label = "instance"
+    replacement  = "{{ hostname }}"
+  }
+
+  rule {
+    target_label = "job"
+    replacement = "integrations/node_exporter"
+  }
+}
+
+prometheus.exporter.unix "integrations_node_exporter" {
+  disable_collectors = ["ipvs", "btrfs", "infiniband", "xfs", "zfs"]
+
+  filesystem {
+    fs_types_exclude     = "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
+    mount_points_exclude = "^/(dev|proc|run/credentials/.+|sys|var/lib/docker/.+)($|/)"
+    mount_timeout        = "5s"
+  }
+
+  netclass {
+    ignored_devices = "^(veth.*|cali.*|[a-f0-9]{15})$"
+  }
+
+  netdev {
+    device_exclude = "^(veth.*|cali.*|[a-f0-9]{15})$"
+  }
+}
+
+prometheus.scrape "integrations_node_exporter" {
+  targets    = discovery.relabel.integrations_node_exporter.output
+  forward_to = [prometheus.relabel.integrations_node_exporter.receiver]
+}
+
+prometheus.relabel "integrations_node_exporter" {
+  forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
+
+  rule {
+    source_labels = ["__name__"]
+    regex         = "node_scrape_collector_.+"
+    action        = "drop"
+  }
+}
+
+loki.relabel "integrations_node_exporter" {
+  forward_to = [loki.write.grafana_cloud_loki.receiver]
+  rule {
+    target_label = "job"
+    replacement  = "integrations/node_exporter"
+  }
+  rule {
+    target_label = "instance"
+    replacement  = "{{ hostname }}"
+  }
+}
+
+journal_module "integrations_node_exporter" {
+  forward_to = [loki.relabel.integrations_node_exporter.receiver]
+}
+
+filelogs_module "integrations_node_exporter" {
+  forward_to = [loki.relabel.integrations_node_exporter.receiver] 
+}
+
+//FILELOGS
+declare "filelogs_module" {
+  argument "forward_to" {
+      optional = false
+  }
+  local.file_match "default" {
+    path_targets = [{
+      __address__ = "localhost",
+      __path__    = "/var/log/{syslog,messages,*.log}",
+    }]
+  }
+
+  loki.source.file "default" {
+    targets    = local.file_match.default.targets
+    forward_to = argument.forward_to.value
+  }
+}
+
+//JOURNAL
+declare "journal_module" {
+  argument "forward_to" {
+      optional = false
+  }
+
+  loki.source.journal "default"  {
+      max_age       = "12h0m0s"
+      forward_to    = [loki.process.default.receiver]
+      relabel_rules = loki.relabel.default.rules
+  }
+
+  loki.relabel "default" {
+      rule {
+          source_labels = ["__journal__systemd_unit"]
+          target_label  = "unit"
+      }
+      rule {
+          source_labels = ["__journal__boot_id"]
+          target_label  = "boot_id"
+      }
+      rule {
+          source_labels = ["__journal__transport"]
+          target_label  = "transport"
+      }
+      rule {
+          source_labels = ["__journal_priority_keyword"]
+          target_label  = "level"
+      }
+      forward_to    = []
+  }
+  loki.process "default" {
+      forward_to    = argument.forward_to.value
+  }
+}
+
+
+
+prometheus.exporter.blackbox "blackbox_exporter" {
+  config = "{ modules: { http_2xx: { prober: http, timeout: 5s } } }"
+
+  target {
+    name    = "Misskey"
+    address = "https://msky.kentaro1043.com/.well-known/nodeinfo"
+    module = "http_2xx"
+  }
+}
+
+prometheus.scrape "blackbox_exporter" {
+  targets    = prometheus.exporter.blackbox.blackbox_exporter.targets
+  forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
+}
