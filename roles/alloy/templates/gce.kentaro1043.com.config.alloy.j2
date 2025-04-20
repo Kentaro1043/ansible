@@ -148,8 +148,22 @@ prometheus.exporter.blackbox "blackbox_exporter" {
 
   target {
     name    = "Misskey"
-    address = "https://msky.kentaro1043.com/.well-known/nodeinfo"
+    address = "https://msky.kentaro1043.com"
     module = "http_2xx"
+  }
+}
+
+discovery.relabel "blackbox_exporter" {
+  targets = prometheus.exporter.blackbox.blackbox_exporter.targets
+
+  rule {
+    source_labels = ["__param_target"]
+    target_label = "instance"
+  }
+
+  rule {
+    source_labels = ["__param_target"]
+    target_label = "target"
   }
 }
 
