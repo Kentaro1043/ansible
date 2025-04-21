@@ -151,6 +151,12 @@ prometheus.exporter.blackbox "blackbox_exporter" {
     address = "https://msky.kentaro1043.com"
     module = "http_2xx"
   }
+
+  target {
+    name = "Vaultwarden"
+    address = "https://vw.kentaro1043.com"
+    module = "http_2xx"
+  }
 }
 
 discovery.relabel "blackbox_exporter" {
