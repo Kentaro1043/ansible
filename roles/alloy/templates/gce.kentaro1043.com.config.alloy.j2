@@ -168,6 +168,6 @@ discovery.relabel "blackbox_exporter" {
 }
 
 prometheus.scrape "blackbox_exporter" {
-  targets    = prometheus.exporter.blackbox.blackbox_exporter.targets
+  targets    = discovery.relabel.blackbox_exporter.output
   forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
 }
