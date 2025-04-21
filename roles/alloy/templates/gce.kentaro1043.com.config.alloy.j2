@@ -157,6 +157,18 @@ prometheus.exporter.blackbox "blackbox_exporter" {
     address = "https://vw.kentaro1043.com"
     module = "http_2xx"
   }
+
+  target {
+    name = "Portainer"
+    address = "https://portainer.kentaro1043.com"
+    module = "http_2xx"
+  }
+
+  target {
+    name = "Traefik"
+    address = "https://traefik.kentaro1043.com"
+    module = "http_2xx"
+  }
 }
 
 discovery.relabel "blackbox_exporter" {
