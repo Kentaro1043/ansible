@@ -1,0 +1,11 @@
+---
+- name: Make journal directory
+  become: true
+  ansible.builtin.file:
+    path: /var/log/journal
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+  notify:
+    - Restart journald
