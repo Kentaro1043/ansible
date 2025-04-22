@@ -1,0 +1,5 @@
+---
+- name: OKE worker nodes
+  hosts: oke_nodes
+  roles:
+    - add-kentaro

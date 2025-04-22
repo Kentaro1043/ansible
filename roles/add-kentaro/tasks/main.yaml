@@ -4,7 +4,7 @@
     name: kentaro
     create_home: true
     shell: /bin/bash
-    groups: sudo
+    groups: "{{ 'sudo' if ansible_distribution in ['Ubuntu', 'Debian'] else 'wheel' }}"
     append: true
     state: present
   become: true

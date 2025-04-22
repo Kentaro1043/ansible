@@ -1,14 +1,35 @@
 ---
 all:
   children:
-    gce_compute:
+    gce:
       hosts:
         gce.kentaro1043.com:
           ansible_user: kentaro
           ansible_python_interpreter: /usr/bin/python3
-    oci_compute:
+    oci:
       hosts:
         oci.kentaro1043.com:
           ansible_user: kentaro
           ansible_ssh_user: ubuntu
           ansible_python_interpreter: /usr/bin/python3
+
+    oke_nodes:
+      children:
+        oke_node1:
+          hosts:
+            private.oke-node1.kentaro1043.com:
+              ansible_user: kentaro
+              ansible_ssh_user: opc
+              ansible_python_interpreter: /usr/bin/python3.12
+        oke_node2:
+          hosts:
+            private.oke-node2.kentaro1043.com:
+              ansible_user: kentaro
+              ansible_ssh_user: opc
+              ansible_python_interpreter: /usr/bin/python3.12
+        oke_node3:
+          hosts:
+            private.oke-node3.kentaro1043.com:
+              ansible_user: kentaro
+              ansible_ssh_user: opc
+              ansible_python_interpreter: /usr/bin/python3.12

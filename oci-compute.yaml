@@ -1,6 +1,6 @@
 ---
 - name: Oci-compute
-  hosts: oci_compute
+  hosts: oci
   roles:
     - add-kentaro
     - common-ubuntu
