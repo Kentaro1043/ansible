@@ -2,11 +2,11 @@
 - name: Oci-compute
   hosts: oci
   roles:
-    - add-kentaro
-    - common-ubuntu
-    - open-port
-    - oci-attach-vnic
-    - nfs-server
+    - add_kentaro
+    - common_ubuntu
+    - open_port
+    - oci_attach_vnic
+    - nfs_server
     - docker
     - portainer
     - alloy

@@ -2,6 +2,6 @@
 - name: Gce-compute
   hosts: gce
   roles:
-    - add-kentaro
-    - common-ubuntu
+    - add_kentaro
+    - common_ubuntu
     - alloy
