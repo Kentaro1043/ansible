@@ -22,3 +22,9 @@
     state: present
   loop: "{{ public_udp_ports }}"
   when: public_udp_ports is defined
+
+- name: Save iptables rules
+  become: true
+  community.general.iptables_state:
+    state: saved
+    path: /etc/sysconfig/iptables

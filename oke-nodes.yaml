@@ -3,4 +3,5 @@
   hosts: oke_nodes
   roles:
     - add_kentaro
+    - set_hostname
     - journal_config

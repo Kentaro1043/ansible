@@ -4,6 +4,7 @@
   roles:
     - add_kentaro
     - common_ubuntu
+    - set_hostname
     - open_port
     - oci_attach_vnic
     - nfs_server
