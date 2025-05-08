@@ -1,4 +1,4 @@
-hostname: "private.oke-node1.kentaro1043.com"
+hostname: "oke-node1.kentaro1043.com"
 
 architecture: "arm64"
 
