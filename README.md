@@ -1,10 +1,22 @@
 # Ansible
 
-## OKEについての注意
+## OKE についての注意
 
-OKEのOracle LinuxのデフォルトPythonバージョンは3.6で古い。
+OKE の Oracle Linux のデフォルト Python バージョンは 3.6 で古い。
 手動でアップデートする。
 
 ```shell
 sudo dnf install python3.12
+```
+
+## Tasks
+
+### playbook
+
+playbok を実行する。
+
+Inputs: PLAYBOOK
+
+```bash
+ansible-playbook -i hosts.yaml --ask-vault-pass $PLAYBOOK
 ```
