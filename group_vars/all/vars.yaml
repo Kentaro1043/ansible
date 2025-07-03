@@ -1,4 +1,4 @@
-public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFCytwLi8ammupfuJuFxMl/VihfpiJBRlmmh4gtPFgHH kentaro"
+public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGMeqxiGjNrfjXyUFgS4edXiFBwUFYy1EJx5UTvsO7sh kentaro"
 
 alloy:
   gcloud_hosted_metrics_id: "2388951"
