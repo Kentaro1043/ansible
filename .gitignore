@@ -98,3 +98,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/ansible,visualstudiocode,windows,linux,macos
+
+**/secrets/*
+!**/secrets/*.enc.yaml

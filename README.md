@@ -18,5 +18,5 @@ playbok を実行する。
 Inputs: PLAYBOOK
 
 ```bash
-ansible-playbook -i hosts.yaml --ask-vault-pass $PLAYBOOK
+ansible-playbook -i hosts.yaml $PLAYBOOK
 ```

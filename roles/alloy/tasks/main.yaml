@@ -47,7 +47,7 @@
     src: /usr/lib/systemd/system/alloy.service
     remote_src: true
     dest: /etc/systemd/system/alloy.service
-    mode: '0644'
+    mode: "0644"
   when: not systemd_service_file.stat.exists
 
 - name: Change user using alloy service
@@ -65,9 +65,22 @@
   ansible.builtin.file:
     path: /etc/alloy
     state: directory
-    mode: '0755'
+    mode: "0755"
 
-- name: Copy alloy config
+- name: Load alloy secrets
+  become: true
+  ansible.builtin.set_fact:
+    _alloy_secrets: "{{ lookup('community.sops.sops', '../secrets/secrets.enc.yaml') | from_yaml }}"
+
+- name: Set alloy credentials from secrets
+  become: true
+  ansible.builtin.set_fact:
+    alloy_username: "{{ (_alloy_secrets | default({})).alloy_username | default('') }}"
+    alloy_password: "{{ (_alloy_secrets | default({})).alloy_password | default('') }}"
+    loki_username: "{{ (_alloy_secrets | default({})).loki_username | default('') }}"
+    loki_password: "{{ (_alloy_secrets | default({})).loki_password | default('') }}"
+
+- name: Copy alloy config (use credentials)
   become: true
   notify:
     - Reload systemd
@@ -75,7 +88,16 @@
   ansible.builtin.template:
     src: "{{ inventory_hostname }}.config.alloy.j2"
     dest: /etc/alloy/config.alloy
-    mode: '0644'
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true
+
+- name: Delete alloy credentials
+  ansible.builtin.set_fact:
+    _alloy_secrets: {}
+    alloy_username: ""
+    alloy_password: ""
 
 - name: Start alloy
   become: true

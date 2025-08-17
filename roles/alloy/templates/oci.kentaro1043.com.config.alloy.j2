@@ -3,8 +3,8 @@ prometheus.remote_write "grafana_cloud_prometheus" {
     url = "https://prometheus-prod-49-prod-ap-northeast-0.grafana.net/api/prom/push"
 
     basic_auth {
-      username = "2389127"
-      password = {{ oci_alloy_api }}
+      username = "{{ alloy_username }}"
+      password = "{{ alloy_password }}"
     }
   }
 }
@@ -14,8 +14,8 @@ loki.write "grafana_cloud_loki" {
     url = "https://logs-prod-030.grafana.net/loki/api/v1/push"
 
     basic_auth {
-      username = "1190241"
-      password = {{ oci_loki_api }}
+      username = "{{ loki_username }}"
+      password = "{{ loki_password }}"
     }
   }
 }
