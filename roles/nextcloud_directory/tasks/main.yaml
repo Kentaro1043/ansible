@@ -1,0 +1,9 @@
+---
+- name: Create Nextcloud NFS directory
+  become: true
+  ansible.builtin.file:
+    path: /srv/nfs/nextcloud
+    state: directory
+    owner: nobody
+    group: www-data
+    mode: "2775"
