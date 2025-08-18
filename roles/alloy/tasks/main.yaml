@@ -78,6 +78,7 @@
     loki_url: "{{ (_alloy_secrets | default({})).loki_url | default('') }}"
     loki_username: "{{ (_alloy_secrets | default({})).loki_username | default('') }}"
     loki_password: "{{ (_alloy_secrets | default({})).loki_password | default('') }}"
+    github_pat: "{{ (_alloy_secrets | default({})).github_pat | default('') }}"
 
 - name: Copy alloy config (use credentials)
   become: true
@@ -93,8 +94,13 @@
 - name: Delete alloy credentials
   ansible.builtin.set_fact:
     _alloy_secrets: {}
+    alloy_url: ""
     alloy_username: ""
     alloy_password: ""
+    loki_url: ""
+    loki_username: ""
+    loki_password: ""
+    github_pat: ""
 
 - name: Start alloy
   become: true

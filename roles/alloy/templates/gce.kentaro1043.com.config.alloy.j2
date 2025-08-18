@@ -1,6 +1,6 @@
-////
-// Remote configuration
-////
+//////////////////////////
+// Remote configuration //
+//////////////////////////
 prometheus.remote_write "grafana_cloud_prometheus" {
   endpoint {
     url = "{{ alloy_url }}"
@@ -23,9 +23,9 @@ loki.write "grafana_cloud_loki" {
   }
 }
 
-////
-// Node Exporter
-////
+///////////////////
+// Node Exporter //
+///////////////////
 discovery.relabel "integrations_node_exporter" {
   targets = prometheus.exporter.unix.integrations_node_exporter.targets
 
@@ -73,9 +73,9 @@ prometheus.relabel "integrations_node_exporter" {
   }
 }
 
-////
-// Logs
-////
+//////////
+// Logs //
+//////////
 loki.relabel "integrations_node_exporter" {
   forward_to = [loki.write.grafana_cloud_loki.receiver]
   rule {
@@ -96,7 +96,7 @@ filelogs_module "integrations_node_exporter" {
   forward_to = [loki.relabel.integrations_node_exporter.receiver] 
 }
 
-//FILELOGS
+// FILELOGS
 declare "filelogs_module" {
   argument "forward_to" {
       optional = false
@@ -114,7 +114,7 @@ declare "filelogs_module" {
   }
 }
 
-//JOURNAL
+// JOURNAL
 declare "journal_module" {
   argument "forward_to" {
       optional = false
@@ -149,3 +149,42 @@ declare "journal_module" {
       forward_to    = argument.forward_to.value
   }
 }
+
+////////////
+// GitHub //
+////////////
+prometheus.exporter.github "integrations_github_exporter" {
+	repositories = ["Kentaro1043/ansible", "Kentaro1043/manifest", "Kentaro1043/terraform", "Kentaro1043/compose"]
+	api_token    = "{{ github_pat }}"
+}
+
+discovery.relabel "integrations_github_exporter" {
+	targets = prometheus.exporter.github.integrations_github_exporter.targets
+
+	rule {
+		target_label = "instance"
+		replacement  = "{{ hostname }}"
+	}
+
+	rule {
+		target_label = "job"
+		replacement  = "integrations/github_exporter"
+	}
+}
+
+prometheus.scrape "integrations_github_exporter" {
+	targets    = discovery.relabel.integrations_github_exporter.output
+	forward_to = [prometheus.relabel.integrations_github_exporter.receiver]
+	job_name   = "integrations/github_exporter"
+}
+
+prometheus.relabel "integrations_github_exporter" {
+	forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
+
+	rule {
+		source_labels = ["__name__"]
+		regex         = "up|github_rate_limit|github_rate_remaining|github_repo_forks|github_repo_open_issues|github_repo_pull_request_count|github_repo_size_kb|github_repo_stars|github_repo_watchers"
+		action        = "keep"
+	}
+}
+
