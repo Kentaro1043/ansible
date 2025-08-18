@@ -17,3 +17,13 @@
     state: present
     create: false
   notify: Restart sshd
+
+- name: Prohibit empty password
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitEmptyPasswords\s+.*'
+    line: "PermitEmptyPasswords no"
+    state: present
+    create: false
+  notify: Restart sshd
