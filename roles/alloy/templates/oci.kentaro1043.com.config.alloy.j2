@@ -1,6 +1,6 @@
-////
-// Remote configuration
-////
+//////////////////////////
+// Remote configuration //
+//////////////////////////
 prometheus.remote_write "grafana_cloud_prometheus" {
   endpoint {
     url = "{{ alloy_url }}"
@@ -23,9 +23,9 @@ loki.write "grafana_cloud_loki" {
   }
 }
 
-////
-// Node Exporter
-////
+///////////////////
+// Node Exporter //
+///////////////////
 discovery.relabel "integrations_node_exporter" {
   targets = prometheus.exporter.unix.integrations_node_exporter.targets
 
@@ -73,9 +73,9 @@ prometheus.relabel "integrations_node_exporter" {
   }
 }
 
-////
-// Logs
-////
+//////////
+// Logs //
+//////////
 loki.relabel "integrations_node_exporter" {
   forward_to = [loki.write.grafana_cloud_loki.receiver]
   rule {
@@ -96,7 +96,7 @@ filelogs_module "integrations_node_exporter" {
   forward_to = [loki.relabel.integrations_node_exporter.receiver] 
 }
 
-//FILELOGS
+// FILELOGS
 declare "filelogs_module" {
   argument "forward_to" {
       optional = false
@@ -114,7 +114,7 @@ declare "filelogs_module" {
   }
 }
 
-//JOURNAL
+// JOURNAL
 declare "journal_module" {
   argument "forward_to" {
       optional = false
@@ -149,3 +149,78 @@ declare "journal_module" {
       forward_to    = argument.forward_to.value
   }
 }
+
+//////////////
+// cAdvisor //
+//////////////
+prometheus.exporter.cadvisor "integrations_cadvisor" {
+    docker_only = true
+}
+discovery.relabel "integrations_cadvisor" {
+    targets = prometheus.exporter.cadvisor.integrations_cadvisor.targets
+
+    rule {
+        target_label = "job"
+        replacement  = "integrations/docker"
+    }
+
+    rule {
+        target_label = "instance"
+        replacement  = "{{ hostname }}"
+    }
+}
+
+prometheus.relabel "integrations_cadvisor" {
+	forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
+
+	rule {
+		source_labels = ["__name__"]
+		regex         = "up|container_cpu_usage_seconds_total|container_fs_inodes_free|container_fs_inodes_total|container_fs_limit_bytes|container_fs_usage_bytes|container_last_seen|container_memory_usage_bytes|container_network_receive_bytes_total|container_network_tcp_usage_total|container_network_transmit_bytes_total|container_spec_memory_reservation_limit_bytes|machine_memory_bytes|machine_scrape_error"
+		action        = "keep"
+	}
+}
+
+prometheus.scrape "integrations_cadvisor" {
+    targets    = discovery.relabel.integrations_cadvisor.output
+    forward_to = [prometheus.relabel.integrations_cadvisor.receiver]
+}
+
+/////////////////
+// Docker Logs //
+/////////////////
+discovery.docker "logs_integrations_docker" {
+    host             = "unix:///var/run/docker.sock"
+    refresh_interval = "5s"
+}
+discovery.relabel "logs_integrations_docker" {
+    targets = []
+
+    rule {
+        target_label = "job"
+        replacement  = "integrations/docker"
+    }
+
+    rule {
+        target_label = "instance"
+        replacement  = constants.hostname
+    }
+
+    rule {
+        source_labels = ["__meta_docker_container_name"]
+        regex         = "/(.*)"
+        target_label  = "container"
+    }
+
+    rule {
+        source_labels = ["__meta_docker_container_log_stream"]
+        target_label  = "stream"
+    }
+}
+loki.source.docker "logs_integrations_docker" {
+    host             = "unix:///var/run/docker.sock"
+    targets          = discovery.docker.logs_integrations_docker.targets
+    forward_to       = [loki.write.grafana_cloud_loki.receiver]
+    relabel_rules    = discovery.relabel.logs_integrations_docker.rules
+    refresh_interval = "5s"
+}
+

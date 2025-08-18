@@ -52,9 +52,7 @@
 
 - name: Change user using alloy service
   become: true
-  notify:
-    - Reload systemd
-    - Restart alloy
+  notify: Reload systemd
   ansible.builtin.replace:
     path: /etc/systemd/system/alloy.service
     regexp: "^User=alloy$"
@@ -83,9 +81,7 @@
 
 - name: Copy alloy config (use credentials)
   become: true
-  notify:
-    - Reload systemd
-    - Restart alloy
+  notify: Restart alloy
   ansible.builtin.template:
     src: "{{ inventory_hostname }}.config.alloy.j2"
     dest: /etc/alloy/config.alloy
