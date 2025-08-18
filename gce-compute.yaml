@@ -5,4 +5,5 @@
     - add_kentaro
     - common_ubuntu
     - set_hostname
+    - sshd_config
     - alloy

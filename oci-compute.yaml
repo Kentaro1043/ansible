@@ -5,6 +5,7 @@
     - add_kentaro
     - common_ubuntu
     - set_hostname
+    - sshd_config
     - open_port
     - oci_attach_vnic
     - nfs_server
