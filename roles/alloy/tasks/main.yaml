@@ -73,10 +73,11 @@
     _alloy_secrets: "{{ lookup('community.sops.sops', '../secrets/secrets.enc.yaml') | from_yaml }}"
 
 - name: Set alloy credentials from secrets
-  become: true
   ansible.builtin.set_fact:
+    alloy_url: "{{ (_alloy_secrets | default({})).alloy_url | default('') }}"
     alloy_username: "{{ (_alloy_secrets | default({})).alloy_username | default('') }}"
     alloy_password: "{{ (_alloy_secrets | default({})).alloy_password | default('') }}"
+    loki_url: "{{ (_alloy_secrets | default({})).loki_url | default('') }}"
     loki_username: "{{ (_alloy_secrets | default({})).loki_username | default('') }}"
     loki_password: "{{ (_alloy_secrets | default({})).loki_password | default('') }}"
 
