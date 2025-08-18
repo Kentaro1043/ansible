@@ -7,3 +7,13 @@
     state: present
     create: false
   notify: Restart sshd
+
+- name: Disable SSH password authentication
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication\s+.*'
+    line: "PasswordAuthentication no"
+    state: present
+    create: false
+  notify: Restart sshd
