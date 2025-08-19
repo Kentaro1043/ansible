@@ -10,3 +10,9 @@ postgres:
       port: 65433
     - name: "invidious"
       port: 65435
+
+redis:
+  - name: "misskey"
+    port: 56379
+  - name: "nextcloud"
+    port: 56380
