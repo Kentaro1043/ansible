@@ -1,10 +1,1 @@
 public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGMeqxiGjNrfjXyUFgS4edXiFBwUFYy1EJx5UTvsO7sh kentaro"
-
-alloy:
-  gcloud_hosted_metrics_id: "2388951"
-  gcloud_hosted_metrics_url: "https://prometheus-prod-49-prod-ap-northeast-0.grafana.net/api/prom/push"
-  gcloud_hosted_logs_id: "1190153"
-  gcloud_hosted_logs_url: "https://logs-prod-030.grafana.net/loki/api/v1/push"
-  gcloud_fm_url: "https://fleet-management-prod-019.grafana.net"
-  gcloud_fm_poll_frequency: "60s"
-  gcloud_fm_hosted_id: "1232356"
