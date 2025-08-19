@@ -284,38 +284,17 @@ prometheus.scrape "integrations_postgres_exporter_{{ db.name }}" {
     job_name   = "integrations/postgres_exporter"
 }
 
-discovery.relabel "logs_integrations_postgres_exporter_{{ db.name }}" {
-    targets = []
-
-    // postgresのコンテナを抽出
-    rule {
-        source_labels = ["__meta_docker_container_name"]
-        regex         = ".*postgres_{{ db.name }}.*"
-        action        = "keep"
-    }
-
-    rule {
-        target_label = "job"
-        replacement  = "integrations/postgres_exporter"
-    }
-    rule {
-        target_label = "instance"
-        replacement  = "{{ hostname }}"
-    }
-    
-    rule {
-        source_labels = ["__meta_docker_container_name"]
-        regex         = "/(.*)"
-        target_label  = "container"
-    }
-}
-
-loki.source.docker "logs_integrations_postgres_exporter_{{ db.name }}" {
-    host             = "unix:///var/run/docker.sock"
-    targets          = discovery.docker.logs_integrations_docker.targets
-    forward_to       = [loki.write.grafana_cloud_loki.receiver]
-    relabel_rules    = discovery.relabel.logs_integrations_postgres_exporter_{{ db.name }}.rules
-    refresh_interval = "5s"
-}
-
 {% endfor %}
+
+local.file_match "logs_integrations_postgres_exporter" {
+    path_targets = [{
+        __address__ = "localhost",
+        __path__    = "/srv/postgres/log/*.log",
+        instance    = "{{ hostname }}",
+        job         = "integrations/postgres_exporter",
+    }]
+}
+loki.source.file "logs_integrations_postgres_exporter" {
+    targets    = local.file_match.logs_integrations_postgres_exporter.targets
+    forward_to = [loki.write.grafana_cloud_loki.receiver]
+}

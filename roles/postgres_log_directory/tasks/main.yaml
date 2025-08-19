@@ -1,0 +1,18 @@
+---
+- name: Ensure base postgres directory exists
+  become: true
+  ansible.builtin.file:
+    path: /srv/postgres
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure postgres log directory exists and has correct permissions
+  become: true
+  ansible.builtin.file:
+    path: "/srv/postgres/log"
+    state: directory
+    owner: "999"
+    group: "999"
+    mode: "0755"
