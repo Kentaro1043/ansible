@@ -1,1 +1,12 @@
 public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGMeqxiGjNrfjXyUFgS4edXiFBwUFYy1EJx5UTvsO7sh kentaro"
+
+postgres:
+  db:
+    - name: "misskey"
+      port: 65432
+    - name: "nextcloud"
+      port: 65434
+    - name: "vaultwarden"
+      port: 65433
+    - name: "invidious"
+      port: 65435
