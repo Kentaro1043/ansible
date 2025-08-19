@@ -224,28 +224,6 @@ loki.source.docker "logs_integrations_docker" {
     refresh_interval = "5s"
 }
 
-/////////////////////////
-// Cloudflare Exporter //
-/////////////////////////
-prometheus.scrape "metrics_integrations_integrations_cloudflare" {
-	targets = [{
-		__address__ = "localhost:48080",
-		instance    = "{{ hostname }}",
-	}]
-	forward_to = [prometheus.relabel.metrics_integrations_integrations_cloudflare.receiver]
-	job_name   = "integrations/cloudflare"
-}
-
-prometheus.relabel "metrics_integrations_integrations_cloudflare" {
-	forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
-
-	rule {
-		source_labels = ["__name__"]
-		regex         = "up|cloudflare_worker_cpu_time|cloudflare_worker_duration|cloudflare_worker_errors_count|cloudflare_worker_requests_count|cloudflare_zone_bandwidth_cached|cloudflare_zone_bandwidth_content_type|cloudflare_zone_bandwidth_ssl_encrypted|cloudflare_zone_bandwidth_total|cloudflare_zone_colocation_requests_total|cloudflare_zone_pageviews_total|cloudflare_zone_pool_health_status|cloudflare_zone_pool_requests_total|cloudflare_zone_requests_browser_map_page_views_count|cloudflare_zone_requests_cached|cloudflare_zone_requests_status|cloudflare_zone_requests_total|cloudflare_zone_threats_total|cloudflare_zone_uniques_total"
-		action        = "keep"
-	}
-}
-
 //////////////
 // Postgres //
 //////////////
