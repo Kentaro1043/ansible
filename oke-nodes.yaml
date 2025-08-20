@@ -3,6 +3,8 @@
   hosts: oke_nodes
   roles:
     - add_kentaro
+    - common_oci
     - set_hostname
     - sshd_config
     - journal_config
+    - unmount_oci_log_dir

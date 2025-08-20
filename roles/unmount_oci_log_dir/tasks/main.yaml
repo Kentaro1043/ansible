@@ -1,0 +1,50 @@
+---
+- name: Comment out ocivolume-oled fstab entry
+  become: true
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '(^\s*/dev/mapper/ocivolume-oled\s+/var/oled\b.*)'
+    replace: '# \1'
+
+# Oracle Linuxにて、dnfモジュールが使えない問題がある
+# 手動実行で対応
+# `sudo dnf remove pcp`
+# - name: Uninstall pcp
+#   become: true
+#   ansible.builtin.dnf:
+#     name: pcp
+#     state: absent
+
+- name: Ensure /var/oled is unmounted
+  become: true
+  ansible.posix.mount:
+    path: /var/oled
+    state: unmounted
+
+- name: Create /var/oled/crash
+  become: true
+  ansible.builtin.file:
+    path: /var/oled/crash
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Remove logical volume ocivolume/oled
+  become: true
+  community.general.lvol:
+    vg: ocivolume
+    lv: oled
+    state: absent
+    force: true
+  register: lv_remove
+
+- name: Extend ocivolume/root by 10G when space freed
+  become: true
+  community.general.lvol:
+    vg: ocivolume
+    lv: root
+    size: "+10G"
+    resizefs: true
+  register: lv_extend
+  when: lv_remove is defined and lv_remove.changed
