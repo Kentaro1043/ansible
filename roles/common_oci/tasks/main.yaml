@@ -1,0 +1,4 @@
+---
+- name: Import sudo-no-password.yaml
+  ansible.builtin.import_tasks: sudo-no-password.yaml
+  become: true
