@@ -8,6 +8,8 @@ postgres:
       port: 65434
     - name: "vaultwarden"
       port: 65433
+    - name: "n8n"
+      port: 65436
 
 redis:
   - name: "misskey"

@@ -82,7 +82,7 @@
     postgres_password_misskey: "{{ (_alloy_secrets | default({})).postgres_password_misskey | default('') }}"
     postgres_password_vaultwarden: "{{ (_alloy_secrets | default({})).postgres_password_vaultwarden | default('') }}"
     postgres_password_nextcloud: "{{ (_alloy_secrets | default({})).postgres_password_nextcloud | default('') }}"
-    postgres_password_invidious: "{{ (_alloy_secrets | default({})).postgres_password_invidious | default('') }}"
+    postgres_password_n8n: "{{ (_alloy_secrets | default({})).postgres_password_n8n | default('') }}"
 
 - name: Copy alloy config (use credentials)
   become: true
@@ -108,7 +108,7 @@
     postgres_password_misskey: ""
     postgres_password_vaultwarden: ""
     postgres_password_nextcloud: ""
-    postgres_password_invidious: ""
+    postgres_password_n8n: ""
 
 - name: Start alloy
   become: true
