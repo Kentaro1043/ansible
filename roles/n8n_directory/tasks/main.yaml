@@ -1,0 +1,9 @@
+---
+- name: Create n8n NFS directory
+  become: true
+  ansible.builtin.file:
+    path: /srv/nfs/n8n
+    state: directory
+    owner: 1000
+    group: 1000
+    mode: "2775"
