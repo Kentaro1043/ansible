@@ -6,5 +6,6 @@
     - common_oci
     - set_hostname
     - sshd_config
+    - swap
     - journal_config
     - unmount_oci_log_dir

@@ -10,6 +10,8 @@ nodesb_nic: "enp1s0"
 nodesb_ip: "10.0.10.155/24"
 nodesb_mac: "02:00:17:01:DC:59"
 
+swap_size: 6G
+
 public_tcp_ports:
   - 2049 # NFS
 

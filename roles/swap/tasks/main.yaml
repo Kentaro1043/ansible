@@ -1,0 +1,25 @@
+- name: Ensure /swapfile exists at desired size
+  become: true
+  community.general.filesize:
+    path: "/swapfile"
+    size: "{{ swap_size }}"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Format /swapfile as swap
+  become: true
+  community.general.filesystem:
+    fstype: swap
+    dev: /swapfile
+
+- name: Ensure swap is enabled and persistent in fstab
+  become: true
+  ansible.posix.mount:
+    src: /swapfile
+    path: none
+    fstype: swap
+    opts: sw
+    dump: 0
+    passno: 0
+    state: present

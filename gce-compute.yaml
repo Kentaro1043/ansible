@@ -6,4 +6,5 @@
     - common_ubuntu
     - set_hostname
     - sshd_config
+    - swap
     - alloy

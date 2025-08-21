@@ -8,6 +8,7 @@
     - sshd_config
     - open_port
     - oci_attach_vnic
+    - swap
     - nfs_server
     - docker
     - portainer
