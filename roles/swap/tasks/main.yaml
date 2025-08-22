@@ -2,22 +2,20 @@
 # swaponにおいては1Gが1024Mとして表示される？
 
 - name: Check swap status
-  ansible.builtin.command:
-    cmd: swapon --show=NAME,SIZE
-  register: swap_status
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      swapon --show=NAME,SIZE | grep -oP '^/swapfile\s+\K[\d.]+[A-Z]'
+    executable: /bin/bash
+  register: current_swapfile_size
   changed_when: false
-
-- name: Extract current /swapfile size from swapon output (if present)
-  ansible.builtin.set_fact:
-    current_swapfile_size: "{{ (swap_status.stdout | regex_search('(?m)^/swapfile\\s+\\S+') | default('')) | regex_replace('^/swapfile\\s+', '') }}"
-  when: swap_status.stdout is defined
-  changed_when: false
+  ignore_errors: true
 
 - name: Disable swap if it is already enabled and not matching desired size
   become: true
   ansible.builtin.command:
     cmd: swapoff /swapfile
-  when: current_swapfile_size != "" and current_swapfile_size != swap_size
+  when: current_swapfile_size.stdout != "" and current_swapfile_size.stdout != swap_size
   register: swap_disable
   changed_when: true
 
@@ -35,13 +33,6 @@
 - name: Flush handler to ensure swapfile is ready
   ansible.builtin.meta: flush_handlers
 
-- name: Enable swap on /swapfile
-  become: true
-  ansible.builtin.command:
-    cmd: swapon /swapfile
-  when: current_swapfile_size == "" or (swap_disable is defined and swap_disable.changed)
-  changed_when: true
-
 - name: Ensure swap is enabled and persistent in fstab
   become: true
   ansible.posix.mount:
@@ -52,3 +43,10 @@
     dump: 0
     passno: 0
     state: present
+
+- name: Enable swap on /swapfile
+  become: true
+  ansible.builtin.command:
+    cmd: swapon /swapfile
+  when: current_swapfile_size.stdout == "" or (swap_disable is defined and swap_disable.changed)
+  changed_when: true
