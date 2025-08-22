@@ -1,0 +1,6 @@
+---
+- name: Make file as swap
+  become: true
+  ansible.builtin.command:
+    cmd: mkswap /swapfile
+  changed_when: true
