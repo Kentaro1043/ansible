@@ -1,6 +1,8 @@
 # Ansible
 
-## OKE についての注意
+## OCI についての注意
+
+### OKEでのPython
 
 OKE の Oracle Linux のデフォルト Python バージョンは 3.6 で古い。
 手動でアップデートする。
@@ -8,6 +10,12 @@ OKE の Oracle Linux のデフォルト Python バージョンは 3.6 で古い�
 ```shell
 sudo dnf install python3.12
 ```
+
+### hostname
+
+OCIインスタンスのhostnameを変更するには、ダッシュボードからVNICのホスト名を変更する必要がある。
+
+[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/howto-change-instance-host-name.htm)
 
 ## Tasks
 
