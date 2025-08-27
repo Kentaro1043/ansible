@@ -1,4 +1,4 @@
-hostname: "okenode1.kentaro1043.com"
+hostname: "okenode1"
 
 architecture: "arm64"
 
