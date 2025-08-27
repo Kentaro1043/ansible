@@ -17,19 +17,19 @@ all:
       children:
         oke_node1:
           hosts:
-            private.oke-node1.kentaro1043.com:
+            private.okenode1.kentaro1043.com:
               ansible_user: kentaro
               ansible_ssh_user: opc
               ansible_python_interpreter: /usr/bin/python3.12
         oke_node2:
           hosts:
-            private.oke-node2.kentaro1043.com:
+            private.okenode2.kentaro1043.com:
               ansible_user: kentaro
               ansible_ssh_user: opc
               ansible_python_interpreter: /usr/bin/python3.12
         oke_node3:
           hosts:
-            private.oke-node3.kentaro1043.com:
+            private.okenode3.kentaro1043.com:
               ansible_user: kentaro
               ansible_ssh_user: opc
               ansible_python_interpreter: /usr/bin/python3.12
