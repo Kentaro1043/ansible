@@ -4,8 +4,8 @@
   ansible.builtin.file:
     path: /var/log/journal
     state: directory
-    mode: '0755'
+    mode: "2755"
     owner: root
-    group: root
+    group: systemd-journal
   notify:
     - Restart journald
