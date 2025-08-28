@@ -1,0 +1,28 @@
+---
+- name: Load kubelet secrets
+  become: true
+  ansible.builtin.set_fact:
+    _kubelet_secrets: "{{ lookup('community.sops.sops', '../secrets/secrets.enc.yaml') | from_yaml }}"
+
+- name: Set kubelet secrets
+  ansible.builtin.set_fact:
+    secret_kubelet_provider_id_okenode1: "{{ _kubelet_secrets.secret_kubelet_provider_id_okenode1 }}"
+    secret_kubelet_provider_id_okenode2: "{{ _kubelet_secrets.secret_kubelet_provider_id_okenode2 }}"
+    secret_kubelet_provider_id_okenode3: "{{ _kubelet_secrets.secret_kubelet_provider_id_okenode3 }}"
+
+- name: Ensure kubelet config file
+  become: true
+  ansible.builtin.template:
+    src: kubelet-config.json.j2
+    dest: /etc/kubernetes/kubelet-config.json
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart kubelet
+
+- name: Delete kubelet secrets
+  ansible.builtin.set_fact:
+    _kubelet_secrets: {}
+    secret_kubelet_provider_id_okenode1: ""
+    secret_kubelet_provider_id_okenode2: ""
+    secret_kubelet_provider_id_okenode3: ""

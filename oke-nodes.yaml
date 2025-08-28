@@ -6,6 +6,8 @@
     - common_oci
     - set_hostname_oci
     - sshd_config
+    - bootloader_config
+    - kubelet_config
     - swap
     - journal_config
     - unmount_oci_log_dir

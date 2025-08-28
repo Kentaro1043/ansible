@@ -1,0 +1,29 @@
+---
+- name: Read /etc/default/grub
+  ansible.builtin.slurp:
+    path: /etc/default/grub
+  register: grub_file
+  become: true
+
+- name: Decode grub content
+  ansible.builtin.set_fact:
+    grub_content: "{{ grub_file.content | b64decode }}"
+  changed_when: false
+
+- name: Check if GRUB_CMDLINE_LINUX contains systemd.unified_cgroup_hierarchy=1
+  ansible.builtin.set_fact:
+    has_unified_cgroup: "{{ (grub_content | regex_search('(?m)^\\s*GRUB_CMDLINE_LINUX=.*systemd\\.unified_cgroup_hierarchy=1')) is not none }}"
+  changed_when: false
+
+- name: Add systemd.unified_cgroup_hierarchy=1 to all kernels with grubby when missing
+  become: true
+  ansible.builtin.command: 'grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=1"'
+  when: not has_unified_cgroup
+  register: grubby_command
+  changed_when: true
+
+- name: Print reboot message if grubby changed
+  ansible.builtin.debug:
+    msg: "GRUB configuration updated. A reboot is required for the changes to take effect."
+  when: grubby_command is defined and grubby_command is changed
+  changed_when: false
