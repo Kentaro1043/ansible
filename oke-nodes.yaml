@@ -6,6 +6,7 @@
     - common_oci
     - set_hostname_oci
     - sshd_config
+    - disable_oke_disabling_swap
     - bootloader_config
     - kubelet_config
     - swap

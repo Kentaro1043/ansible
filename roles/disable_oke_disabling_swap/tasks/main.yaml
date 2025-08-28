@@ -1,0 +1,10 @@
+---
+- name: Disable disabling swap on OKE nodes
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/system/oke-node-startup-cmds.service
+    regexp: '^(ExecStart=.*)\s*&&\s*swapoff\s*-a(.*)$'
+    line: '\1\2'
+    backrefs: true
+  notify:
+    - Reload systemd
