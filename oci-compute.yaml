@@ -12,7 +12,6 @@
     - nfs_server
     - docker
     - portainer
-    - postgres_log_directory
     - alloy
     - nextcloud_directory
     - n8n_directory
