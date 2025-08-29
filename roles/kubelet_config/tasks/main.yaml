@@ -10,6 +10,14 @@
     secret_kubelet_provider_id_okenode2: "{{ _kubelet_secrets.secret_kubelet_provider_id_okenode2 }}"
     secret_kubelet_provider_id_okenode3: "{{ _kubelet_secrets.secret_kubelet_provider_id_okenode3 }}"
 
+- name: Insert ExecStartPost to enable swap after oke bootstrap
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/system/oci-oke-node-bootstrap.service
+    insertafter: "^ExecStart=/usr/bin/oke bootstrap"
+    line: "ExecStartPost=/usr/sbin/swapon /swapfile"
+    state: present
+
 - name: Set OKE_EXTRA_ARGS in /etc/oke/oke.conf
   become: true
   ansible.builtin.lineinfile:
