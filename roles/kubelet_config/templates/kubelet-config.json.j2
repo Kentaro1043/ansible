@@ -1,15 +1,19 @@
 {
+  "kind": "KubeletConfiguration",
   "apiVersion": "kubelet.config.k8s.io/v1beta1",
+  "allowedUnsafeSysctls": [
+    "net.*"
+  ],
   "authentication": {
-    "anonymous": {
-      "enabled": false
-    },
-    "webhook": {
-      "cacheTTL": "2m0s",
-      "enabled": true
-    },
     "x509": {
       "clientCAFile": "/etc/kubernetes/ca.crt"
+    },
+    "webhook": {
+      "enabled": true,
+      "cacheTTL": "2m0s"
+    },
+    "anonymous": {
+      "enabled": false
     }
   },
   "authorization": {
@@ -20,20 +24,35 @@
     }
   },
   "cgroupDriver": "systemd",
+  "clusterDNS": [
+    "10.96.5.5"
+  ],
   "clusterDomain": "cluster.local",
-  "containerLogMaxFiles": 10,
+  "containerLogMaxFiles": 5,
   "containerLogMaxSize": "20Mi",
+  "containerRuntimeEndpoint": "unix:///var/run/crio/crio.sock",
   "enableControllerAttachDetach": true,
   "eventRecordQPS": 0,
   "evictionPressureTransitionPeriod": "0s",
-  "kind": "KubeletConfiguration",
-  "protectKernelDefaults": true,
-  "readOnlyPort": 0,
+  "featureGates": {
+    "DynamicResourceAllocation": true
+  },
+  "kubeReserved": {
+    "cpu": "60m",
+    "memory": "1Gi"
+  },
+  "maxPods": 110,
+  "oomScoreAdj": -999,
+  "providerID": "{{ kubelet_provider_id }}",
+  "resolvConf": "/etc/resolv.conf",
   "rotateCertificates": true,
   "runtimeRequestTimeout": "0s",
   "serializeImagePulls": false,
+  "systemReserved": {
+    "cpu": "100m",
+    "memory": "100Mi"
+  },
   "tlsCertFile": "/var/lib/kubelet/pki/tls.pem",
-  "tlsPrivateKeyFile": "/var/lib/kubelet/pki/tls.key",
   "tlsCipherSuites": [
     "TLS_AES_256_GCM_SHA384",
     "TLS_AES_128_GCM_SHA256",
@@ -42,10 +61,8 @@
     "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
     "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
   ],
-  "clusterDNS": [
-    "10.96.5.5"
-  ],
-  "providerID": "{{ kubelet_provider_id }}",
+  "tlsPrivateKeyFile": "/var/lib/kubelet/pki/tls.key",
+  "volumePluginDir": "/etc/libexec/kubernetes/kubelet-plugins/volume/exec/",
   "failSwapOn": false,
   "memorySwap": {
     "swapBehavior": "LimitedSwap"

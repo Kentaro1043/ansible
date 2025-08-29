@@ -2,7 +2,7 @@ hostname: "okenode2"
 
 architecture: "arm64"
 
-private_ip_for_node_sb: "10.0.10.183"
+private_ip_for_node_sb: "10.0.10.52"
 
 swap_size: 6G
 
