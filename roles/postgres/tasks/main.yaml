@@ -33,6 +33,7 @@
   become: true
   ansible.builtin.set_fact:
     postgres_password_vaultwarden: "{{ _postgres_secrets.postgres_password_vaultwarden }}"
+    postgres_password_n8n: "{{ _postgres_secrets.postgres_password_n8n }}"
 
 - name: Include Postgres DB tasks
   ansible.builtin.include_tasks: db.yaml
@@ -43,3 +44,4 @@
   ansible.builtin.set_fact:
     _postgres_secrets: {}
     postgres_password_vaultwarden: ""
+    postgres_password_n8n: ""
