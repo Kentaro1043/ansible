@@ -10,15 +10,22 @@
     secret_kubelet_provider_id_okenode2: "{{ _kubelet_secrets.secret_kubelet_provider_id_okenode2 }}"
     secret_kubelet_provider_id_okenode3: "{{ _kubelet_secrets.secret_kubelet_provider_id_okenode3 }}"
 
+- name: Set OKE_EXTRA_ARGS in /etc/oke/oke.conf
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/oke/oke.conf
+    regexp: "^OKE_EXTRA_ARGS=.*"
+    line: 'OKE_EXTRA_ARGS="--kubelet-user-preferred-args ''--config /etc/kubernetes/kubelet-config-customed.json''"'
+
 - name: Ensure kubelet config file
   become: true
   ansible.builtin.template:
     src: kubelet-config.json.j2
-    dest: /etc/kubernetes/kubelet-config.json
+    dest: /etc/kubernetes/kubelet-config-customed.json
     owner: root
     group: root
     mode: "0644"
-  notify: Restart kubelet
+  notify: Print Reboot Required
 
 - name: Delete kubelet secrets
   ansible.builtin.set_fact:

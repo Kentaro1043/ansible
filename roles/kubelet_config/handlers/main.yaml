@@ -1,7 +1,4 @@
 ---
-- name: Restart kubelet
-  become: true
-  ansible.builtin.systemd:
-    name: kubelet
-    state: restarted
-    enabled: true
+- name: Print Reboot Required
+  ansible.builtin.debug:
+    msg: "Reboot is required to apply the new kubelet configuration."
