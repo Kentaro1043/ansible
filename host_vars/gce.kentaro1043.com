@@ -1,4 +1,4 @@
-hostname: "gce.kentaro1043.com"
+hostname: "gce"
 
 architecture: "amd64"
 
