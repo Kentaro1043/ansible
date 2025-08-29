@@ -79,10 +79,7 @@
     loki_username: "{{ (_alloy_secrets | default({})).loki_username | default('') }}"
     loki_password: "{{ (_alloy_secrets | default({})).loki_password | default('') }}"
     github_pat: "{{ (_alloy_secrets | default({})).github_pat | default('') }}"
-    postgres_password_misskey: "{{ (_alloy_secrets | default({})).postgres_password_misskey | default('') }}"
-    postgres_password_vaultwarden: "{{ (_alloy_secrets | default({})).postgres_password_vaultwarden | default('') }}"
-    postgres_password_nextcloud: "{{ (_alloy_secrets | default({})).postgres_password_nextcloud | default('') }}"
-    postgres_password_n8n: "{{ (_alloy_secrets | default({})).postgres_password_n8n | default('') }}"
+    postgres_password_postgres: "{{ (_alloy_secrets | default({})).postgres_password_postgres | default('') }}"
 
 - name: Copy alloy config (use credentials)
   become: true
@@ -105,10 +102,7 @@
     loki_username: ""
     loki_password: ""
     github_pat: ""
-    postgres_password_misskey: ""
-    postgres_password_vaultwarden: ""
-    postgres_password_nextcloud: ""
-    postgres_password_n8n: ""
+    postgres_password_postgres: ""
 
 - name: Start alloy
   become: true

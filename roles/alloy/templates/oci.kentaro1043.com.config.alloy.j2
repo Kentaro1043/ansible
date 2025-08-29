@@ -228,7 +228,7 @@ loki.source.docker "logs_integrations_docker" {
 // Postgres //
 //////////////
 prometheus.exporter.postgres "integrations_postgres_exporter" {
-    data_source_names = ["postgresql://postgres@localhost:5432/postgres"]
+    data_source_names = ["postgresql://postgres:{{ postgres_password_postgres }}@localhost:5432/postgres?sslmode=disable"]
 }
 discovery.relabel "integrations_postgres_exporter" {
     targets = prometheus.exporter.postgres.integrations_postgres_exporter.targets

@@ -32,8 +32,16 @@
 - name: Set postgres credentials from secrets (create variables postgres_password_<name>)
   become: true
   ansible.builtin.set_fact:
+    postgres_password_postgres: "{{ _postgres_secrets.postgres_password_postgres }}"
     postgres_password_vaultwarden: "{{ _postgres_secrets.postgres_password_vaultwarden }}"
     postgres_password_n8n: "{{ _postgres_secrets.postgres_password_n8n }}"
+
+- name: Set password for postgres user
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    name: "postgres"
+    password: "{{ postgres_password_postgres }}"
 
 - name: Include Postgres DB tasks
   ansible.builtin.include_tasks: db.yaml
