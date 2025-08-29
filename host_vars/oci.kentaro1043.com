@@ -14,8 +14,6 @@ swap_size: 6G
 
 public_tcp_ports:
   - 2049 # NFS
+  - 5432 # PostgreSQL
 
-public_udp_port: 
-
-alloy:
-  gcloud_rw_api_key: "{{ vault_oci_gcloud_rw_api_key }}"
+public_udp_port: []

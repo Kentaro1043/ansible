@@ -5,6 +5,8 @@
       - git
       - vim
       - gpg
+      - acl
+      - lsof
       - iptables-persistent
     update_cache: true
     state: present

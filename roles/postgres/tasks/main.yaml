@@ -1,0 +1,45 @@
+---
+- name: Ensure PostgreSQL is installed
+  become: true
+  ansible.builtin.apt:
+    name:
+      - postgresql
+      - postgresql-contrib
+      - python3-psycopg2
+    state: present
+
+- name: Allow External Connections to PostgreSQL
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_set:
+    name: listen_addresses
+    value: "*"
+  notify: Restart PostgreSQL
+
+- name: Ensure PostgreSQL service is running
+  become: true
+  ansible.builtin.service:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: Load postgres secrets
+  become: true
+  ansible.builtin.set_fact:
+    _postgres_secrets: "{{ lookup('community.sops.sops', '../secrets/secrets.enc.yaml') | from_yaml }}"
+  no_log: true
+
+- name: Set postgres credentials from secrets (create variables postgres_password_<name>)
+  become: true
+  ansible.builtin.set_fact:
+    postgres_password_vaultwarden: "{{ _postgres_secrets.postgres_password_vaultwarden }}"
+
+- name: Include Postgres DB tasks
+  ansible.builtin.include_tasks: db.yaml
+  with_items: "{{ postgres }}"
+
+- name: Clean up temporary postgres secrets container
+  become: true
+  ansible.builtin.set_fact:
+    _postgres_secrets: {}
+    postgres_password_vaultwarden: ""

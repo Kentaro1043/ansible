@@ -1,0 +1,33 @@
+---
+- name: Ensure password variables exist for configured Postgres DBs
+  become: true
+  ansible.builtin.assert:
+    that:
+      - "vars['postgres_password_' ~ item] is defined"
+    fail_msg: "Missing sops variable: postgres_password_{{ item }} (set in host_vars or group_vars, encrypted with sops)"
+
+- name: Create PostgreSQL user for each configured DB
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    name: "{{ item }}"
+    password: "{{ vars['postgres_password_' ~ item] }}"
+
+- name: Create PostgreSQL database for each configured DB
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_db:
+    name: "{{ item }}"
+    owner: "{{ item }}"
+
+- name: Allow remote access to each configured DB
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_pg_hba:
+    dest: /etc/postgresql/16/main/pg_hba.conf
+    address: samenet
+    contype: host
+    databases: "{{ item }}"
+    users: "{{ item }}"
+    method: password
+  notify: Restart PostgreSQL

@@ -10,6 +10,7 @@
     - oci_attach_vnic
     - swap
     - nfs_server
+    - postgres
     - docker
     - portainer
     - alloy
