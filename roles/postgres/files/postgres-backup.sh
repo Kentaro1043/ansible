@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -eux
+
+DATE=$(date +%Y%m%d)
+
+sudo -u postgres pg_dumpall | gzip > "/var/backups/postgres/postgres_backup_${DATE}.sql.gz"
+
+chown root:root "/var/backups/postgres/postgres_backup_${DATE}.sql.gz"
+
+docker run --rm \
+  -v "/var/backups/postgres/postgres_backup_${DATE}.sql.gz:/root/postgres_backup_${DATE}.sql.gz" \
+  -v /root/gcp-service-account.json:/root/gcp-service-account.json \
+  gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine \
+  /bin/bash -c "gcloud auth activate-service-account --key-file /root/gcp-service-account.json && gsutil cp /root/postgres_backup_${DATE}.sql.gz gs://backups-kentaro/postgres/postgres_backup_${DATE}.sql.gz"
+
+rm "/var/backups/postgres/postgres_backup_${DATE}.sql.gz"

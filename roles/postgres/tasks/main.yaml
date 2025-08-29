@@ -45,3 +45,40 @@
     _postgres_secrets: {}
     postgres_password_vaultwarden: ""
     postgres_password_n8n: ""
+
+- name: Ensure backup directory exists
+  become: true
+  ansible.builtin.file:
+    path: /var/backups/postgres
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: "0644"
+
+- name: Copy backup script
+  become: true
+  ansible.builtin.copy:
+    src: postgres-backup.sh
+    dest: /usr/local/bin/backup_postgres.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy GCP credentials for backup
+  become: true
+  ansible.builtin.copy:
+    content: "{{ lookup('community.sops.sops', '../secrets/gcp-service-account.enc.json') }}"
+    dest: /root/gcp-service-account.json
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Schedule daily PostgreSQL backups
+  become: true
+  ansible.builtin.cron:
+    name: "Daily PostgreSQL Backup"
+    user: root
+    job: "/usr/local/bin/backup_postgres.sh >> /var/log/backup_postgres.log 2>&1"
+    minute: "0"
+    hour: "3"
+    state: present
