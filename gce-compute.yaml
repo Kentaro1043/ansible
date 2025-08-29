@@ -3,6 +3,7 @@
   hosts: gce
   roles:
     - add_kentaro
+    - timezone
     - common_ubuntu
     - set_hostname
     - sshd_config

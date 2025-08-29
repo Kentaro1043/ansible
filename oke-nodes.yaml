@@ -3,6 +3,7 @@
   hosts: oke_nodes
   roles:
     - add_kentaro
+    - timezone
     - common_oci
     - set_hostname_oci
     - sshd_config
