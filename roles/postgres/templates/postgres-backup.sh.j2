@@ -16,4 +16,4 @@ docker run --rm \
 
 rm "/var/backups/postgres/postgres_backup_${DATE}.sql.gz"
 
-curl -H "Content-Type: application/json" -d '{"content": "### :white_check_mark: PostgreSQL backup completed"}' "{{ postgres_backup_webhook_url }}"
+curl -H "Content-Type: application/json" -d '{"content": "## :white_check_mark: PostgreSQL backup completed"}' "{{ postgres_backup_webhook_url }}"
