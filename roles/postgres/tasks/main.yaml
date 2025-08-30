@@ -23,6 +23,24 @@
     state: started
     enabled: true
 
+- name: Ensure backup directory exists
+  become: true
+  ansible.builtin.file:
+    path: /var/backups/postgres
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: "0644"
+
+- name: Copy GCP credentials for backup
+  become: true
+  ansible.builtin.copy:
+    content: "{{ lookup('community.sops.sops', '../secrets/gcp-service-account.enc.json') }}"
+    dest: /root/gcp-service-account.json
+    owner: root
+    group: root
+    mode: "0600"
+
 - name: Load postgres secrets
   become: true
   ansible.builtin.set_fact:
@@ -35,6 +53,7 @@
     postgres_password_postgres: "{{ _postgres_secrets.postgres_password_postgres }}"
     postgres_password_vaultwarden: "{{ _postgres_secrets.postgres_password_vaultwarden }}"
     postgres_password_n8n: "{{ _postgres_secrets.postgres_password_n8n }}"
+    postgres_backup_webhook_url: "{{ _postgres_secrets.postgres_backup_webhook_url }}"
 
 - name: Set password for postgres user
   become: true
@@ -42,6 +61,15 @@
   community.postgresql.postgresql_user:
     name: "postgres"
     password: "{{ postgres_password_postgres }}"
+
+- name: Copy backup script
+  become: true
+  ansible.builtin.template:
+    src: postgres-backup.sh.j2
+    dest: /usr/local/bin/backup_postgres.sh
+    owner: root
+    group: root
+    mode: "0755"
 
 - name: Include Postgres DB tasks
   ansible.builtin.include_tasks: db.yaml
@@ -53,33 +81,7 @@
     _postgres_secrets: {}
     postgres_password_vaultwarden: ""
     postgres_password_n8n: ""
-
-- name: Ensure backup directory exists
-  become: true
-  ansible.builtin.file:
-    path: /var/backups/postgres
-    state: directory
-    owner: postgres
-    group: postgres
-    mode: "0644"
-
-- name: Copy backup script
-  become: true
-  ansible.builtin.copy:
-    src: postgres-backup.sh
-    dest: /usr/local/bin/backup_postgres.sh
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Copy GCP credentials for backup
-  become: true
-  ansible.builtin.copy:
-    content: "{{ lookup('community.sops.sops', '../secrets/gcp-service-account.enc.json') }}"
-    dest: /root/gcp-service-account.json
-    owner: root
-    group: root
-    mode: "0600"
+    postgres_password_postgres: ""
 
 - name: Schedule daily PostgreSQL backups
   become: true

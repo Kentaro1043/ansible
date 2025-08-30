@@ -15,3 +15,5 @@ docker run --rm \
   /bin/bash -c "gcloud auth activate-service-account --key-file /root/gcp-service-account.json && gsutil cp /root/postgres_backup_${DATE}.sql.gz gs://backups-kentaro/postgres/postgres_backup_${DATE}.sql.gz"
 
 rm "/var/backups/postgres/postgres_backup_${DATE}.sql.gz"
+
+curl -H "Content-Type: application/json" -d '{"content": "### :white_check_mark: PostgreSQL backup completed"}' "{{ postgres_backup_webhook_url }}"
