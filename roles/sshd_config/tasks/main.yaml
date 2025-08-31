@@ -6,7 +6,9 @@
     line: "Port 50022"
     state: present
     create: false
-  notify: Restart sshd
+  notify:
+    - Reload config
+    - Restart sshd
 
 - name: Ensure PermitRootLogin is set to no
   become: true
