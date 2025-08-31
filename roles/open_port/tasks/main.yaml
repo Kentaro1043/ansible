@@ -27,4 +27,4 @@
   become: true
   community.general.iptables_state:
     state: saved
-    path: /etc/sysconfig/iptables
+    path: /etc/iptables/rules.v4

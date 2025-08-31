@@ -15,5 +15,6 @@ swap_size: 6G
 public_tcp_ports:
   - 2049 # NFS
   - 5432 # PostgreSQL
+  - 50022 # Custom SSH
 
 public_udp_port: []
