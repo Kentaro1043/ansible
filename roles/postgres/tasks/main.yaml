@@ -91,4 +91,5 @@
     job: "/usr/local/bin/backup_postgres.sh >> /var/log/backup_postgres.log 2>&1"
     minute: "0"
     hour: "3"
+    weekday: "6"
     state: present
