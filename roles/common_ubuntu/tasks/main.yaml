@@ -1,8 +1,23 @@
 ---
-- name: Import apt-package.yaml
-  ansible.builtin.import_tasks: apt-package.yaml
-  become: true
+- name: Install common packages
+  ansible.builtin.apt:
+    name:
+      - git
+      - vim
+      - gpg
+      - acl
+      - lsof
+      - cron
+      - iptables-persistent
+    update_cache: true
+    state: present
 
-- name: Import sudo-no-password.yaml
-  ansible.builtin.import_tasks: sudo-no-password.yaml
+- name: Make sudo no password for sudo group
   become: true
+  community.general.sudoers:
+    name: sudo group no password
+    commands: ALL
+    group: sudo
+    nopassword: true
+    state: present
+    validation: required
