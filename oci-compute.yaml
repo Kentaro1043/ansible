@@ -4,6 +4,7 @@
   roles:
     - add_kentaro
     - common_ubuntu
+    - google_cloud_cli
     - set_hostname
     - sshd_config
     - open_port

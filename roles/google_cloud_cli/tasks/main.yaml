@@ -1,0 +1,18 @@
+---
+- name: Import google cloud GPG key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add google cloud repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: deb https://packages.cloud.google.com/apt cloud-sdk main
+
+- name: Install google cloud CLI
+  become: true
+  ansible.builtin.apt:
+    name: google-cloud-cli
+    state: present
+    update_cache: true
