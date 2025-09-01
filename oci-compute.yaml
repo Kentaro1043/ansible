@@ -12,4 +12,5 @@
     - swap
     - nfs_server
     - postgres
+    - redis
     - alloy

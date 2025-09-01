@@ -1,0 +1,13 @@
+---
+- name: Install Redis
+  become: true
+  ansible.builtin.apt:
+    name: redis-server
+    state: present
+
+- name: Ensure Redis is started and enabled
+  become: true
+  ansible.builtin.service:
+    name: redis-server
+    state: started
+    enabled: true
