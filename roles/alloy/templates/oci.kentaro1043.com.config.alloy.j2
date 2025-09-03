@@ -313,31 +313,31 @@ prometheus.relabel "integrations_redis_exporter" {
 /////////////
 // Traefik //
 /////////////
-discovery.relabel "metrics_integrations_integrations_traefik" {
-	targets = [{
-    __scheme__ 	= "https",
-		__address__ = "traefik.kentaro1043.com",
-    __metrics_path__ = "/metrics",
-	}]
-
-	rule {
-		target_label = "instance"
-		replacement  = "{{ hostname }}"
-	}
-}
-
-prometheus.scrape "metrics_integrations_integrations_traefik" {
-	targets    = discovery.relabel.metrics_integrations_integrations_traefik.output
-	forward_to = [prometheus.relabel.metrics_integrations_integrations_traefik.receiver]
-	job_name   = "integrations/traefik"
-}
-
-prometheus.relabel "metrics_integrations_integrations_traefik" {
-	forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
-
-	rule {
-		source_labels = ["__name__"]
-		regex         = "up|traefik_entrypoint_requests_total|traefik_service_request_duration_seconds_sum|traefik_service_requests_total"
-		action        = "keep"
-	}
-}
+// discovery.relabel "metrics_integrations_integrations_traefik" {
+// 	targets = [{
+//     __scheme__ 	= "https",
+// 		__address__ = "traefik.kentaro1043.com",
+//     __metrics_path__ = "/metrics",
+// 	}]
+// 
+// 	rule {
+// 		target_label = "instance"
+// 		replacement  = "{{ hostname }}"
+// 	}
+// }
+// 
+// prometheus.scrape "metrics_integrations_integrations_traefik" {
+// 	targets    = discovery.relabel.metrics_integrations_integrations_traefik.output
+// 	forward_to = [prometheus.relabel.metrics_integrations_integrations_traefik.receiver]
+// 	job_name   = "integrations/traefik"
+// }
+// 
+// prometheus.relabel "metrics_integrations_integrations_traefik" {
+// 	forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
+// 
+// 	rule {
+// 		source_labels = ["__name__"]
+// 		regex         = "up|traefik_entrypoint_requests_total|traefik_service_request_duration_seconds_sum|traefik_service_requests_total"
+// 		action        = "keep"
+// 	}
+// }

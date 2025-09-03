@@ -153,38 +153,37 @@ declare "journal_module" {
 ////////////
 // GitHub //
 ////////////
-prometheus.exporter.github "integrations_github_exporter" {
-	repositories = ["Kentaro1043/ansible", "Kentaro1043/manifest", "Kentaro1043/terraform", "Kentaro1043/compose"]
-	api_token    = "{{ github_pat }}"
-}
-
-discovery.relabel "integrations_github_exporter" {
-	targets = prometheus.exporter.github.integrations_github_exporter.targets
-
-	rule {
-		target_label = "instance"
-		replacement  = "{{ hostname }}"
-	}
-
-	rule {
-		target_label = "job"
-		replacement  = "integrations/github_exporter"
-	}
-}
-
-prometheus.scrape "integrations_github_exporter" {
-	targets    = discovery.relabel.integrations_github_exporter.output
-	forward_to = [prometheus.relabel.integrations_github_exporter.receiver]
-	job_name   = "integrations/github_exporter"
-}
-
-prometheus.relabel "integrations_github_exporter" {
-	forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
-
-	rule {
-		source_labels = ["__name__"]
-		regex         = "up|github_rate_limit|github_rate_remaining|github_repo_forks|github_repo_open_issues|github_repo_pull_request_count|github_repo_size_kb|github_repo_stars|github_repo_watchers"
-		action        = "keep"
-	}
-}
-
+// prometheus.exporter.github "integrations_github_exporter" {
+// 	repositories = ["Kentaro1043/ansible", "Kentaro1043/manifest", "Kentaro1043/terraform", "Kentaro1043/compose"]
+// 	api_token    = "{{ github_pat }}"
+// }
+// 
+// discovery.relabel "integrations_github_exporter" {
+// 	targets = prometheus.exporter.github.integrations_github_exporter.targets
+// 
+// 	rule {
+// 		target_label = "instance"
+// 		replacement  = "{{ hostname }}"
+// 	}
+// 
+// 	rule {
+// 		target_label = "job"
+// 		replacement  = "integrations/github_exporter"
+// 	}
+// }
+// 
+// prometheus.scrape "integrations_github_exporter" {
+// 	targets    = discovery.relabel.integrations_github_exporter.output
+// 	forward_to = [prometheus.relabel.integrations_github_exporter.receiver]
+// 	job_name   = "integrations/github_exporter"
+// }
+// 
+// prometheus.relabel "integrations_github_exporter" {
+// 	forward_to = [prometheus.remote_write.grafana_cloud_prometheus.receiver]
+// 
+// 	rule {
+// 		source_labels = ["__name__"]
+// 		regex         = "up|github_rate_limit|github_rate_remaining|github_repo_forks|github_repo_open_issues|github_repo_pull_request_count|github_repo_size_kb|github_repo_stars|github_repo_watchers"
+// 		action        = "keep"
+// 	}
+// }
