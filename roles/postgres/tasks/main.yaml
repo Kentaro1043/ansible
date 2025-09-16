@@ -53,6 +53,7 @@
     postgres_password_postgres: "{{ _postgres_secrets.postgres_password_postgres }}"
     postgres_password_vaultwarden: "{{ _postgres_secrets.postgres_password_vaultwarden }}"
     postgres_password_n8n: "{{ _postgres_secrets.postgres_password_n8n }}"
+    postgres_password_authentik: "{{ _postgres_secrets.postgres_password_authentik }}"
     postgres_backup_webhook_url: "{{ _postgres_secrets.postgres_backup_webhook_url }}"
 
 - name: Set password for postgres user
@@ -81,6 +82,8 @@
     _postgres_secrets: {}
     postgres_password_vaultwarden: ""
     postgres_password_n8n: ""
+    postgres_password_authentik: ""
+    postgres_backup_webhook_url: ""
     postgres_password_postgres: ""
 
 - name: Schedule daily PostgreSQL backups

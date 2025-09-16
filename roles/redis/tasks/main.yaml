@@ -11,3 +11,12 @@
     name: redis-server
     state: started
     enabled: true
+
+- name: Configure Redis to allow external connections
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^bind\s+.*'
+    line: "bind 0.0.0.0"
+    state: present
+  notify: Restart Redis

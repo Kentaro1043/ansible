@@ -3,6 +3,7 @@ public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGMeqxiGjNrfjXyUFgS4edXiFBwUFYy
 postgres:
   - "vaultwarden"
   - "n8n"
+  - "authentik"
 
 redis: []
 #  - name: "misskey"
