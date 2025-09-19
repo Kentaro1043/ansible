@@ -5,6 +5,9 @@ postgres:
   - "n8n"
   - "authentik"
 
+mariadb:
+  - "ghost_sumi"
+
 redis: []
 #  - name: "misskey"
 #    port: 56379

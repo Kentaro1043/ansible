@@ -1,0 +1,97 @@
+---
+- name: Import MariaDB GPG key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://mariadb.org/mariadb_release_signing_key.pgp
+    state: present
+
+- name: Add MariaDB repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb https://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/repo/12.0/ubuntu noble main"
+    state: present
+
+- name: Ensure MariaDB is installed
+  become: true
+  ansible.builtin.apt:
+    name:
+      - mariadb-server
+      - python3-pymysql
+    state: present
+    update_cache: true
+
+# - name: Allow External Connections to PostgreSQL
+#   become: true
+#   become_user: postgres
+#   community.postgresql.postgresql_set:
+#     name: listen_addresses
+#     value: "*"
+#   notify: Restart PostgreSQL
+
+- name: Ensure MariaDB service is running
+  become: true
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: true
+
+- name: Ensure backup directory exists
+  become: true
+  ansible.builtin.file:
+    path: /var/backups/mariadb
+    state: directory
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy GCP credentials for backup
+  become: true
+  ansible.builtin.copy:
+    content: "{{ lookup('community.sops.sops', '../secrets/gcp-service-account.enc.json') }}"
+    dest: /root/gcp-service-account.json
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Load MariaDB secrets
+  become: true
+  ansible.builtin.set_fact:
+    mariadb_secret: "{{ lookup('community.sops.sops', '../secrets/secrets.enc.yaml') | from_yaml }}"
+  no_log: true
+
+- name: Set password for root user
+  become: true
+  community.mysql.mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: "root"
+    password: "{{ mariadb_secret.mariadb_password_root }}"
+  failed_when: false
+
+- name: Copy backup script
+  become: true
+  ansible.builtin.template:
+    src: mariadb-backup.sh.j2
+    dest: /usr/local/bin/backup_mariadb.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Include MariaDB DB tasks
+  ansible.builtin.include_tasks: db.yaml
+  with_items: "{{ mariadb }}"
+
+- name: Clean up temporary MariaDB secrets container
+  become: true
+  ansible.builtin.set_fact:
+    mariadb_secret: {}
+
+- name: Schedule daily MariaDB backups
+  become: true
+  ansible.builtin.cron:
+    name: "Daily MariaDB Backup"
+    user: root
+    job: "/usr/local/bin/backup_mariadb.sh >> /var/log/backup_mariadb.log 2>&1"
+    minute: "0"
+    hour: "3"
+    weekday: "6"
+    state: present

@@ -14,6 +14,7 @@ swap_size: 6G
 
 public_tcp_ports:
   - 2049 # NFS
+  - 3306 # MariaDB
   - 5432 # PostgreSQL
   - 50022 # Custom SSH
 

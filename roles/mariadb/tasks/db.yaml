@@ -1,0 +1,23 @@
+---
+- name: Ensure password variables exist for configured MariaDB DBs
+  ansible.builtin.assert:
+    that:
+      - "mariadb_secret['mariadb_password_' ~ item] is defined"
+    fail_msg: "Missing sops variable: mariadb_password_{{ item }}"
+
+- name: Create MariaDB database for each configured DB
+  become: true
+  community.mysql.mysql_db:
+    login_user: "root"
+    login_password: "{{ mariadb_secret.mariadb_password_root }}"
+    name: "{{ item }}"
+
+- name: Create MariaDB user for each configured DB
+  become: true
+  community.mysql.mysql_user:
+    login_user: "root"
+    login_password: "{{ mariadb_secret.mariadb_password_root }}"
+    name: "{{ item }}"
+    host: "%"
+    password: "{{ mariadb_secret['mariadb_password_' ~ item] }}"
+    priv: "{{ item }}.*:ALL"
