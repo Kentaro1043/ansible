@@ -4,11 +4,11 @@ set -eux
 
 DATE=$(date +%Y%m%d)
 
-sudo mysqldump -u root --all-databases | gzip > "/var/backups/mariadb/mariadb_backup_${DATE}.sql.gz"
+sudo mariadb-dump -u root -p{{ mariadb_secret.mariadb_password_root }} --all-databases | gzip > "/var/backups/mariadb/mariadb_backup_${DATE}.sql.gz"
 
 gcloud auth activate-service-account --key-file /root/gcp-service-account.json
-gsutil cp "/var/backups/postgres/mariadb_backup_${DATE}.sql.gz" "gs://backups-kentaro/mariadb/mariadb_backup_${DATE}.sql.gz"
+gsutil cp "/var/backups/mariadb/mariadb_backup_${DATE}.sql.gz" "gs://backups-kentaro/mariadb/mariadb_backup_${DATE}.sql.gz"
 
-rm "/var/backups/postgres/mariadb_backup_${DATE}.sql.gz"
+rm "/var/backups/mariadb/mariadb_backup_${DATE}.sql.gz"
 
 curl -H "Content-Type: application/json" -d '{"content": "## :white_check_mark: MariaDB backup completed"}' "{{ mariadb_secret.mariadb_backup_webhook_url }}"
