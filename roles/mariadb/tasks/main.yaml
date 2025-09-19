@@ -28,6 +28,15 @@
 #     value: "*"
 #   notify: Restart PostgreSQL
 
+- name: Allow External Connections to MariaDB
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    regexp: '^bind-address\s*=.*'
+    line: "bind-address = 0.0.0.0"
+    backup: true
+  notify: Restart MariaDB
+
 - name: Ensure MariaDB service is running
   become: true
   ansible.builtin.service:
