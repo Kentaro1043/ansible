@@ -8,7 +8,7 @@
 - name: Add MariaDB repository
   become: true
   ansible.builtin.apt_repository:
-    repo: "deb https://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/repo/12.0/ubuntu noble main"
+    repo: "deb https://mirrors.xtom.jp/mariadb/repo/12.1/ubuntu noble main"
     state: present
 
 - name: Ensure MariaDB is installed
