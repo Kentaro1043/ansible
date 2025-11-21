@@ -3,15 +3,15 @@
   become: true
   ansible.builtin.assert:
     that:
-      - "vars['postgres_password_' ~ item] is defined"
-    fail_msg: "Missing sops variable: postgres_password_{{ item }} (set in host_vars or group_vars, encrypted with sops)"
+      - "postgres_secrets['postgres_password_' ~ item] is defined"
+    fail_msg: "Missing sops variable: postgres_password_{{ item }}"
 
 - name: Create PostgreSQL user for each configured DB
   become: true
   become_user: postgres
   community.postgresql.postgresql_user:
     name: "{{ item }}"
-    password: "{{ vars['postgres_password_' ~ item] }}"
+    password: "{{ postgres_secrets['postgres_password_' ~ item] }}"
 
 - name: Create PostgreSQL database for each configured DB
   become: true

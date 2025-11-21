@@ -4,6 +4,7 @@ postgres:
   - "vaultwarden"
   - "n8n"
   - "authentik"
+  - "semaphoreui"
 
 mariadb:
   - "ghost_sumi"
