@@ -9,7 +9,3 @@ mariadb:
   - "ghost_sumi"
 
 redis: []
-#  - name: "misskey"
-#    port: 56379
-#  - name: "nextcloud"
-#    port: 56380
