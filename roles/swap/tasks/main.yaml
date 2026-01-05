@@ -7,7 +7,7 @@
       set -o pipefail
       swapon --show=NAME,SIZE | grep -oP '^/swapfile\s+\K[\d.]+[A-Z]'
     executable: /bin/bash
-  register: current_swapfile_size
+  register: swap_current_swapfile_size
   changed_when: false
   ignore_errors: true
 
@@ -15,7 +15,7 @@
   become: true
   ansible.builtin.command:
     cmd: swapoff /swapfile
-  when: current_swapfile_size.stdout != "" and current_swapfile_size.stdout != swap_size
+  when: swap_current_swapfile_size.stdout != "" and swap_current_swapfile_size.stdout != swap_size
   register: swap_disable
   changed_when: true
 
@@ -48,5 +48,5 @@
   become: true
   ansible.builtin.command:
     cmd: swapon /swapfile
-  when: current_swapfile_size.stdout == "" or (swap_disable is defined and swap_disable.changed)
+  when: swap_current_swapfile_size.stdout == "" or (swap_disable is defined and swap_disable.changed)
   changed_when: true

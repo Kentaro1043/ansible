@@ -23,7 +23,7 @@
   ansible.builtin.getent:
     database: group
     key: docker
-  register: docker_group
+  register: alloy_docker_group
   ignore_errors: true
 
 - name: Add alloy user to docker group
@@ -32,13 +32,13 @@
     name: alloy
     groups: docker
     append: true
-  when: not docker_group.failed
+  when: not alloy_docker_group.failed
 
 - name: Check if systemd service file exists
   become: true
   ansible.builtin.stat:
     path: /etc/systemd/system/alloy.service
-  register: systemd_service_file
+  register: alloy_systemd_service_file
   ignore_errors: true
 
 - name: Copy systemd service file if it doesn't exist
@@ -48,7 +48,7 @@
     remote_src: true
     dest: /etc/systemd/system/alloy.service
     mode: "0644"
-  when: not systemd_service_file.stat.exists
+  when: not alloy_systemd_service_file.stat.exists
 
 - name: Change user using alloy service
   become: true
@@ -66,20 +66,8 @@
     mode: "0755"
 
 - name: Load alloy secrets
-  become: true
   ansible.builtin.set_fact:
-    _alloy_secrets: "{{ lookup('community.sops.sops', '../secrets/secrets.enc.yaml') | from_yaml }}"
-
-- name: Set alloy credentials from secrets
-  ansible.builtin.set_fact:
-    alloy_url: "{{ (_alloy_secrets | default({})).alloy_url | default('') }}"
-    alloy_username: "{{ (_alloy_secrets | default({})).alloy_username | default('') }}"
-    alloy_password: "{{ (_alloy_secrets | default({})).alloy_password | default('') }}"
-    loki_url: "{{ (_alloy_secrets | default({})).loki_url | default('') }}"
-    loki_username: "{{ (_alloy_secrets | default({})).loki_username | default('') }}"
-    loki_password: "{{ (_alloy_secrets | default({})).loki_password | default('') }}"
-    github_pat: "{{ (_alloy_secrets | default({})).github_pat | default('') }}"
-    postgres_password_postgres: "{{ (_alloy_secrets | default({})).postgres_password_postgres | default('') }}"
+    alloy_secrets: "{{ lookup('community.sops.sops', '../secrets/secrets.enc.yaml') | from_yaml }}"
 
 - name: Copy alloy config (use credentials)
   become: true
@@ -94,15 +82,7 @@
 
 - name: Delete alloy credentials
   ansible.builtin.set_fact:
-    _alloy_secrets: {}
-    alloy_url: ""
-    alloy_username: ""
-    alloy_password: ""
-    loki_url: ""
-    loki_username: ""
-    loki_password: ""
-    github_pat: ""
-    postgres_password_postgres: ""
+    alloy_secrets: {}
 
 - name: Start alloy
   become: true

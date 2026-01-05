@@ -3,22 +3,22 @@
 //////////////////////////
 prometheus.remote_write "grafana_cloud_prometheus" {
   endpoint {
-    url = "{{ alloy_url }}"
+    url = "{{ alloy_secrets.alloy_url }}"
 
     basic_auth {
-      username = "{{ alloy_username }}"
-      password = "{{ alloy_password }}"
+      username = "{{ alloy_secrets.alloy_username }}"
+      password = "{{ alloy_secrets.alloy_password }}"
     }
   }
 }
 
 loki.write "grafana_cloud_loki" {
   endpoint {
-    url = "{{ loki_url }}"
+    url = "{{ alloy_secrets.loki_url }}"
 
     basic_auth {
-      username = "{{ loki_username }}"
-      password = "{{ loki_password }}"
+      username = "{{ alloy_secrets.loki_username }}"
+      password = "{{ alloy_secrets.loki_password }}"
     }
   }
 }
@@ -310,9 +310,9 @@ declare "journal_module" {
 // 	}
 // }
 
-/////////////
+///////////////
 // Traefik //
-/////////////
+///////////////
 // discovery.relabel "metrics_integrations_integrations_traefik" {
 // 	targets = [{
 //     __scheme__ 	= "https",

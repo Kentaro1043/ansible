@@ -37,7 +37,7 @@
     lv: oled
     state: absent
     force: true
-  register: lv_remove
+  register: unmount_oci_log_dir_lv_remove
 
 - name: Extend ocivolume/root by 10G when space freed
   become: true
@@ -46,5 +46,5 @@
     lv: root
     size: "+10G"
     resizefs: true
-  register: lv_extend
-  when: lv_remove is defined and lv_remove.changed
+  register: unmount_oci_log_dir_lv_extend
+  when: unmount_oci_log_dir_lv_remove is defined and unmount_oci_log_dir_lv_remove.changed
